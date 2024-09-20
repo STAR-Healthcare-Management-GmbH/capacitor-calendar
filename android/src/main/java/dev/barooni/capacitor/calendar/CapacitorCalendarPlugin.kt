@@ -407,12 +407,12 @@ class CapacitorCalendarPlugin : Plugin() {
         } catch (error: Exception) {
             call.reject(
                 "",
-                "[CapacitorCalendar.${::createCalendar.name}] Unable to create calendar"
+                "[CapacitorCalendar.${::createCalendar.name}] Unable to create calendar",
+                error
             )
             return
         }
     }
-
 
     @PluginMethod(returnType = PluginMethod.RETURN_PROMISE)
     fun deleteCalendar(call: PluginCall) {
