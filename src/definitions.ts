@@ -428,6 +428,10 @@ export interface CapacitorCalendarPlugin {
    * If not provided, the source of the default calendar will be used. It is
    * recommended to use fetchAllCalendarSources method to fetch the id of the
    * desired source type.
+   *
+   * TODO: Add sourceId will be ignored on android (will be added as a local calendar)
+   * TODO: Add android to @platform in JsDoc
+   *
    * @returns {Promise<{ result: string }>} The id of the created calendar.
    * @example
    * { result } = await CapacitorCalendar.createCalendar({

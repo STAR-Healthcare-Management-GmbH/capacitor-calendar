@@ -388,6 +388,38 @@ class CapacitorCalendarPlugin : Plugin() {
         }
     }
 
+    @PluginMethod(returnType = PluginMethod.RETURN_PROMISE)
+    fun createCalendar(call: PluginCall) {
+        try {
+            val name = call.getString("title")
+                ?: throw IllegalArgumentException("[CapacitorCalendar.${::createCalendar.name}] A title for the calendar was not provided")
+            val color = call.getString("color")
+
+            val calendarUri = implementation.createCalendar(context, name, color)
+
+            val calendarId = calendarUri?.lastPathSegment
+                ?: throw IllegalArgumentException("Failed to insert event into calendar")
+
+            val ret = JSObject()
+            ret.put("result", calendarId)
+            call.resolve(ret)
+            return
+        } catch (error: Exception) {
+            call.reject(
+                "",
+                "[CapacitorCalendar.${::createCalendar.name}] Unable to create calendar"
+            )
+            return
+        }
+    }
+
+
+    @PluginMethod(returnType = PluginMethod.RETURN_PROMISE)
+    fun deleteCalendar(call: PluginCall) {
+        call.unimplemented("[CapacitorCalendar.${::deleteCalendar.name}] Not implemented on Android")
+        return
+    }
+
     @PluginMethod
     fun getDefaultRemindersList(call: PluginCall) {
         call.unimplemented("[CapacitorCalendar.${::getDefaultRemindersList.name}] Not implemented on Android")
@@ -448,18 +480,6 @@ class CapacitorCalendarPlugin : Plugin() {
             call.reject("", "[CapacitorCalendar.${::deleteEventsById.name}] Could not delete events")
             return
         }
-    }
-
-    @PluginMethod(returnType = PluginMethod.RETURN_PROMISE)
-    fun createCalendar(call: PluginCall) {
-        call.unimplemented("[CapacitorCalendar.${::createCalendar.name}] Not implemented on Android")
-        return
-    }
-
-    @PluginMethod(returnType = PluginMethod.RETURN_PROMISE)
-    fun deleteCalendar(call: PluginCall) {
-        call.unimplemented("[CapacitorCalendar.${::deleteCalendar.name}] Not implemented on Android")
-        return
     }
 
     @PluginMethod(returnType = PluginMethod.RETURN_PROMISE)
