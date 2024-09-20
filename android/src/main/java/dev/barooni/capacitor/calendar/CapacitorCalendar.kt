@@ -172,6 +172,30 @@ class CapacitorCalendar {
     }
 
     @Throws(Exception::class)
+    fun createCalendar(context: Context, name: String, color: String?): Uri? {
+        val calendarValues =
+            ContentValues().apply {
+                put(CalendarContract.SyncState.ACCOUNT_NAME, name)
+                put(CalendarContract.SyncState.ACCOUNT_TYPE, CalendarContract.ACCOUNT_TYPE_LOCAL)
+                put(CalendarContract.Calendars.NAME, name)
+                put(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME, name)
+                color?.let { put(CalendarContract.Calendars.CALENDAR_COLOR, color) }
+                put(CalendarContract.Calendars.VISIBLE, 1)
+            }
+
+        val calendarsUri = CalendarContract.Calendars.CONTENT_URI.buildUpon()
+            .appendQueryParameter(CalendarContract.CALLER_IS_SYNCADAPTER, "true")
+            .appendQueryParameter(CalendarContract.SyncState.ACCOUNT_NAME, name)
+            .appendQueryParameter(
+                CalendarContract.SyncState.ACCOUNT_TYPE,
+                CalendarContract.ACCOUNT_TYPE_LOCAL
+            )
+            .build()
+
+        return context.contentResolver.insert(calendarsUri, calendarValues)
+    }
+
+    @Throws(Exception::class)
     fun modifyEvent(
         context: Context,
         id: Long,
