@@ -460,6 +460,9 @@ export interface CapacitorCalendarPlugin {
    * </ul>
    * @param {object} options Options for deleting a calendar.
    * @param {string} options.id The id of the calendar to delete.
+   *
+   * TODO: Update to include android
+   *
    * @example
    * await CapacitorCalendar.deleteCalendar({ id: 'ID_1' });
    */

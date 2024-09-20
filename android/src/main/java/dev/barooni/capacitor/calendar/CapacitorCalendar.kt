@@ -195,6 +195,12 @@ class CapacitorCalendar {
         return context.contentResolver.insert(calendarsUri, calendarValues)
     }
 
+    fun deleteCalendar(context: Context, id: Long): Boolean {
+        val deleteUri = ContentUris.withAppendedId(CalendarContract.Calendars.CONTENT_URI, id)
+        val rows = context.contentResolver.delete(deleteUri, null, null)
+        return rows > 0
+    }
+
     @Throws(Exception::class)
     fun modifyEvent(
         context: Context,

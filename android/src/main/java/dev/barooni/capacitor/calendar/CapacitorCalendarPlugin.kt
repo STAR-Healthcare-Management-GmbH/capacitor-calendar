@@ -416,8 +416,27 @@ class CapacitorCalendarPlugin : Plugin() {
 
     @PluginMethod(returnType = PluginMethod.RETURN_PROMISE)
     fun deleteCalendar(call: PluginCall) {
-        call.unimplemented("[CapacitorCalendar.${::deleteCalendar.name}] Not implemented on Android")
-        return
+        try {
+            val id = call.getString("id")?.toLong()
+                ?: throw IllegalArgumentException("[CapacitorCalendar.${::deleteCalendar.name}] The provided id is not a valid long")
+
+            when {
+                implementation.deleteCalendar(context, id) -> {
+                    call.resolve()
+                }
+
+                else -> {
+                    throw Exception("[CapacitorCalendar.${::deleteCalendar.name}] Calendar was not deleted")
+                }
+            }
+        } catch (error: Exception) {
+            call.reject(
+                "",
+                "[CapacitorCalendar.${::deleteCalendar.name}] Unable to delete calendar",
+                error
+            )
+            return
+        }
     }
 
     @PluginMethod
