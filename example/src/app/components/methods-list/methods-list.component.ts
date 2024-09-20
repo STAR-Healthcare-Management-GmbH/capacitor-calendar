@@ -1,6 +1,7 @@
-import { Component, NgZone } from '@angular/core';
+import {Component, NgZone} from '@angular/core';
 import {
-  IonIcon, IonInput,
+  IonIcon,
+  IonInput,
   IonItem,
   IonLabel,
   IonList,
@@ -14,21 +15,22 @@ import {
   PluginPermission,
   PluginPermissionsMap,
   ReminderRecurrenceFrequency,
+  ReminderRecurrenceRule,
 } from '@ebarooni/capacitor-calendar';
-import { StoreService } from '../../store/store.service';
-import { calendarChooserPickerColumns } from '../../ion-picker-data/calendar-chooser/calendar-chooser-picker-columns';
+import {StoreService} from '../../store/store.service';
+import {calendarChooserPickerColumns} from '../../ion-picker-data/calendar-chooser/calendar-chooser-picker-columns';
 import {
   CalendarChooserResult,
   getCalendarChooserPickerButtons,
 } from '../../ion-picker-data/calendar-chooser/calendar-chooser-picker-buttons';
-import { checkPermissionPickerColumns } from '../../ion-picker-data/check-permission/check-permission-picker-columns';
+import {checkPermissionPickerColumns} from '../../ion-picker-data/check-permission/check-permission-picker-columns';
 import {
   CheckPermissionPickerResult,
   getCheckPermissionPickerButtons,
 } from '../../ion-picker-data/check-permission/check-permission-picker-buttons';
-import { RemindersListViewModalComponent } from '../reminders-list-view-modal/reminders-list-view-modal.component';
-import { EventsActionModalComponent } from '../events-action-modal/events-action-modal.component';
-import { EventUpdate } from '../events-action-modal/event-update';
+import {RemindersListViewModalComponent} from '../reminders-list-view-modal/reminders-list-view-modal.component';
+import {EventsActionModalComponent} from '../events-action-modal/events-action-modal.component';
+import {EventUpdate} from '../events-action-modal/event-update';
 import {FormControl, ReactiveFormsModule} from "@angular/forms";
 
 @Component({
@@ -70,6 +72,8 @@ export class MethodsListComponent {
     );
 
   public calendarDeleteId: FormControl = new FormControl("")
+  public eventCalendarId: FormControl = new FormControl("")
+  public eventCalendarIdWithRecurrence: FormControl = new FormControl("")
 
   constructor(
     private readonly storeService: StoreService,
@@ -157,6 +161,7 @@ export class MethodsListComponent {
     const now = Date.now();
     CapacitorCalendar.createEvent({
       title: 'Capacitor Calendar',
+      calendarId: this.eventCalendarId.value,
       startDate: now,
       endDate: now + 2 * 60 * 60 * 1000,
       location: 'Capacitor Calendar',
@@ -164,6 +169,32 @@ export class MethodsListComponent {
       alertOffsetInMinutes: 15,
       url: 'https://capacitor-calendar.pages.dev',
       notes: 'A CapacitorJS plugin',
+    })
+      .then((response) =>
+        this.storeService.dispatchLog(JSON.stringify(response)),
+      )
+      .catch((error) => this.storeService.dispatchLog(JSON.stringify(error)));
+  }
+
+  public createEventWithRecurrence() {
+    const now = Date.now();
+    const end = now + 2 * 60 * 60 * 1000;
+    const recurrenceRule: ReminderRecurrenceRule = {
+      frequency: ReminderRecurrenceFrequency.DAILY,
+      interval: 1,
+    }
+
+    CapacitorCalendar.createEvent({
+      title: 'Capacitor Calendar',
+      calendarId: this.eventCalendarIdWithRecurrence.value,
+      startDate: now,
+      endDate: end,
+      location: 'Capacitor Calendar',
+      isAllDay: false,
+      alertOffsetInMinutes: 15,
+      url: 'https://capacitor-calendar.pages.dev',
+      notes: 'A CapacitorJS plugin',
+      recurrence: recurrenceRule
     })
       .then((response) =>
         this.storeService.dispatchLog(JSON.stringify(response)),
@@ -397,4 +428,5 @@ export class MethodsListComponent {
       )
       .catch((error) => this.storeService.dispatchLog(JSON.stringify(error)));
   }
+
 }

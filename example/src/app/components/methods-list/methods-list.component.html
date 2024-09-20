@@ -28,6 +28,11 @@
   </ion-item>
   <ion-item button [detail]="true" (click)="createEvent()">
     <ion-label>{{ createEvent.name }}</ion-label>
+    <ion-input [formControl]="eventCalendarId" placeholder="0"></ion-input>
+  </ion-item>
+  <ion-item button [detail]="true" (click)="createEventWithRecurrence()">
+    <ion-label>{{ createEventWithRecurrence.name }}</ion-label>
+    <ion-input [formControl]="eventCalendarIdWithRecurrence" placeholder="0"></ion-input>
   </ion-item>
   <ion-item button [detail]="true" (click)="createEventWithPrompt()">
     <ion-label>{{ createEventWithPrompt.name }}</ion-label>

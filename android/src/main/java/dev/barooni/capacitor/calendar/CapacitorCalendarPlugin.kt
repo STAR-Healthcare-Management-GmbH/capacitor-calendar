@@ -15,6 +15,8 @@ import com.getcapacitor.annotation.ActivityCallback
 import com.getcapacitor.annotation.CapacitorPlugin
 import com.getcapacitor.annotation.Permission
 import com.getcapacitor.annotation.PermissionCallback
+import dev.barooni.capacitor.calendar.model.RecurrenceFrequency
+import dev.barooni.capacitor.calendar.model.RecurrenceRule
 
 @CapacitorPlugin(
     name = "CapacitorCalendar",
@@ -363,6 +365,28 @@ class CapacitorCalendarPlugin : Plugin() {
             val url = call.getString("url")
             val notes = call.getString("notes")
 
+            val recurrenceRule = call.getObject("recurrence")?.let { rule ->
+                val frequency = rule.getString("frequency")?.toInt().let {
+                    when (it) {
+                        0 -> RecurrenceFrequency.DAILY
+                        1 -> RecurrenceFrequency.WEEKLY
+                        2 -> RecurrenceFrequency.MONTHLY
+                        3 -> RecurrenceFrequency.YEARLY
+                        else -> throw IllegalArgumentException("Frequency could not be parsed as RecurrenceFrequency enum")
+                    }
+                }
+
+
+                val interval = rule.getString("interval")?.toInt()
+                    ?: throw IllegalArgumentException("Interval could not be parsed as int")
+
+                val end = rule.getString("end")?.toLong()
+
+                RecurrenceRule(
+                    frequency, interval, end
+                )
+            }
+
             val eventUri =
                 implementation.createEvent(
                     context,
@@ -376,6 +400,7 @@ class CapacitorCalendarPlugin : Plugin() {
                     alertOffsetInMinutesMultiple,
                     url,
                     notes,
+                    recurrenceRule
                 )
 
             val id = eventUri?.lastPathSegment ?: throw IllegalArgumentException("Failed to insert event into calendar")
@@ -383,7 +408,11 @@ class CapacitorCalendarPlugin : Plugin() {
             ret.put("result", id)
             call.resolve(ret)
         } catch (error: Exception) {
-            call.reject("", "[CapacitorCalendar.${::createEvent.name}] Unable to create event")
+            call.reject(
+                "",
+                "[CapacitorCalendar.${::createEvent.name}] Unable to create event",
+                error
+            )
             return
         }
     }

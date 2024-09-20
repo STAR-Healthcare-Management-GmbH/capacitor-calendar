@@ -9,6 +9,7 @@ import android.provider.CalendarContract
 import android.util.Log
 import com.getcapacitor.JSArray
 import com.getcapacitor.JSObject
+import dev.barooni.capacitor.calendar.model.RecurrenceRule
 import java.util.Calendar
 import java.util.TimeZone
 
@@ -126,6 +127,7 @@ class CapacitorCalendar {
         alertOffsetInMinutesMultiple: JSArray?,
         url: String?,
         notes: String?,
+        recurrenceRule: RecurrenceRule?,
     ): Uri {
         val startMillis = startDate ?: Calendar.getInstance().timeInMillis
         val endMillis = endDate ?: (startMillis + 3600 * 1000)
@@ -140,6 +142,7 @@ class CapacitorCalendar {
                 put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().id)
                 isAllDay?.let { put(CalendarContract.Events.ALL_DAY, if (it) 1 else 0) }
                 put(CalendarContract.Events.DESCRIPTION, listOfNotNull(notes, url?.let { "URL: $it" }).joinToString("\n"))
+                recurrenceRule?.let { put(CalendarContract.Events.RRULE, it.toString()) }
             }
 
         val eventUri = context.contentResolver.insert(CalendarContract.Events.CONTENT_URI, eventValues)
