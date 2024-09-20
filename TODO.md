@@ -3,4 +3,3 @@
     2. `createEvent`
     3. (Optional) `modifyEventWithPrompt`
     4. (Optional) `createEventWithPrompt`
-2. Implement `createCalendar` and `deleteCalendar` on Android
