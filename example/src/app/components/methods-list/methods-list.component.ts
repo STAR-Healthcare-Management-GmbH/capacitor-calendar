@@ -1,6 +1,6 @@
 import { Component, NgZone } from '@angular/core';
 import {
-  IonIcon,
+  IonIcon, IonInput,
   IonItem,
   IonLabel,
   IonList,
@@ -29,11 +29,13 @@ import {
 import { RemindersListViewModalComponent } from '../reminders-list-view-modal/reminders-list-view-modal.component';
 import { EventsActionModalComponent } from '../events-action-modal/events-action-modal.component';
 import { EventUpdate } from '../events-action-modal/event-update';
+import {FormControl, ReactiveFormsModule} from "@angular/forms";
 
 @Component({
   selector: 'app-methods-list',
   templateUrl: './methods-list.component.html',
   imports: [
+    IonInput,
     IonIcon,
     IonItem,
     IonLabel,
@@ -42,6 +44,7 @@ import { EventUpdate } from '../events-action-modal/event-update';
     EventsActionModalComponent,
     IonPickerLegacy,
     RemindersListViewModalComponent,
+    ReactiveFormsModule,
   ],
   standalone: true,
 })
@@ -65,6 +68,8 @@ export class MethodsListComponent {
     getCheckPermissionPickerButtons((result: CheckPermissionPickerResult) =>
       this.zone.run(() => this.requestPermission(result.alias.value)),
     );
+
+  public calendarDeleteId: FormControl = new FormControl("")
 
   constructor(
     private readonly storeService: StoreService,
@@ -271,7 +276,7 @@ export class MethodsListComponent {
       .catch((error) => this.storeService.dispatchLog(JSON.stringify(error)));
   }
 
-  public deleteCalendar(): void {
+  public deleteCalendarWithPrompt(): void {
     CapacitorCalendar.selectCalendarsWithPrompt({
       selectionStyle: CalendarChooserSelectionStyle.SINGLE,
       displayStyle: CalendarChooserDisplayStyle.ALL_CALENDARS,
@@ -283,6 +288,11 @@ export class MethodsListComponent {
           return Promise.resolve();
         }
       })
+      .catch((error) => this.storeService.dispatchLog(JSON.stringify(error)));
+  }
+
+  public deleteCalendar(): void {
+    CapacitorCalendar.deleteCalendar({id: this.calendarDeleteId.value})
       .catch((error) => this.storeService.dispatchLog(JSON.stringify(error)));
   }
 
