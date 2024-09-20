@@ -397,8 +397,8 @@ class CapacitorCalendarPlugin : Plugin() {
 
             val calendarUri = implementation.createCalendar(context, name, color)
 
-            val calendarId = calendarUri?.lastPathSegment
-                ?: throw IllegalArgumentException("Failed to insert event into calendar")
+            val calendarId = calendarUri.lastPathSegment
+                ?: throw IllegalArgumentException("Calendar id could not be found")
 
             val ret = JSObject()
             ret.put("result", calendarId)

@@ -172,7 +172,7 @@ class CapacitorCalendar {
     }
 
     @Throws(Exception::class)
-    fun createCalendar(context: Context, name: String, color: String?): Uri? {
+    fun createCalendar(context: Context, name: String, color: String?): Uri {
         val calendarValues =
             ContentValues().apply {
                 put(CalendarContract.SyncState.ACCOUNT_NAME, name)
@@ -192,7 +192,7 @@ class CapacitorCalendar {
             )
             .build()
 
-        return context.contentResolver.insert(calendarsUri, calendarValues)
+        return context.contentResolver.insert(calendarsUri, calendarValues)?: throw Exception("Calendar was not created")
     }
 
     fun deleteCalendar(context: Context, id: Long): Boolean {
