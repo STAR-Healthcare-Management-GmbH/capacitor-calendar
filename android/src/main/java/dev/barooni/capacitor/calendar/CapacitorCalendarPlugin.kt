@@ -365,27 +365,7 @@ class CapacitorCalendarPlugin : Plugin() {
             val url = call.getString("url")
             val notes = call.getString("notes")
 
-            val recurrenceRule = call.getObject("recurrence")?.let { rule ->
-                val frequency = rule.getString("frequency")?.toInt().let {
-                    when (it) {
-                        0 -> RecurrenceFrequency.DAILY
-                        1 -> RecurrenceFrequency.WEEKLY
-                        2 -> RecurrenceFrequency.MONTHLY
-                        3 -> RecurrenceFrequency.YEARLY
-                        else -> throw IllegalArgumentException("Frequency could not be parsed as RecurrenceFrequency enum")
-                    }
-                }
-
-
-                val interval = rule.getString("interval")?.toInt()
-                    ?: throw IllegalArgumentException("Interval could not be parsed as int")
-
-                val end = rule.getString("end")?.toLong()
-
-                RecurrenceRule(
-                    frequency, interval, end
-                )
-            }
+            val recurrenceRule = call.getObject("recurrence")?.let { RecurrenceRule(it) }
 
             val eventUri =
                 implementation.createEvent(

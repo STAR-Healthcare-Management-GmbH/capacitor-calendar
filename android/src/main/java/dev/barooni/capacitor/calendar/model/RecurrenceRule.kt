@@ -1,5 +1,6 @@
 package dev.barooni.capacitor.calendar.model
 
+import com.getcapacitor.JSObject
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -13,6 +14,22 @@ data class RecurrenceRule(
     init {
         require(interval > 0)
     }
+
+    constructor(rule: JSObject) : this(
+        rule.getString("frequency")?.let {
+            when (it.toInt()) {
+                0 -> RecurrenceFrequency.DAILY
+                1 -> RecurrenceFrequency.WEEKLY
+                2 -> RecurrenceFrequency.MONTHLY
+                3 -> RecurrenceFrequency.YEARLY
+                else -> throw IllegalArgumentException("frequency is not a valid ${RecurrenceRule::class.qualifiedName}")
+            }
+        }
+            ?: throw IllegalArgumentException("'frequency' is either not defined or not a valid integer"),
+        rule.getInteger("interval")
+            ?: throw IllegalArgumentException("'interval' is either not defined or not a valid integer"),
+        rule.getString("end")?.toLong(),
+    )
 
     /**
      * @return a RFC 5545 compliant recurrence rule
