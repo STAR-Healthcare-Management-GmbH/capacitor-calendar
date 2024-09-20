@@ -126,6 +126,7 @@ export interface CapacitorCalendarPlugin {
     url?: string;
     notes?: string;
     eventIdOptional?: boolean;
+    recurrence?: ReminderRecurrenceRule;
   }): Promise<{ result: string[] }>;
 
   /**
@@ -238,6 +239,7 @@ export interface CapacitorCalendarPlugin {
     alertOffsetInMinutes?: number | number[];
     url?: string;
     notes?: string;
+    recurrence?: ReminderRecurrenceRule;
   }): Promise<{ result: string }>;
 
   /**
@@ -603,6 +605,7 @@ export interface CapacitorCalendarPlugin {
       alertOffsetInMinutes?: number | number[];
       url?: string;
       notes?: string;
+      recurrence?: ReminderRecurrenceRule;
     };
   }): Promise<{ result: string[] }>;
 
@@ -650,6 +653,7 @@ export interface CapacitorCalendarPlugin {
       alertOffsetInMinutes?: number | number[];
       url?: string;
       notes?: string;
+      recurrence?: ReminderRecurrenceRule;
     };
   }): Promise<void>;
 

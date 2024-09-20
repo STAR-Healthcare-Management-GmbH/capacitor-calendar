@@ -63,7 +63,7 @@
     "docgen:readme": "docgen --api CapacitorCalendarPlugin --output-readme README.md",
     "typedoc:index": "npx typedoc",
     "clean": "rm -rf ./dist",
-    "build": "npm run clean && npm run docgen:api-reference && npm run docgen:readme && tsc && rollup -c rollup.config.mjs",
+    "build": "npm run docgen:api-reference && npm run docgen:readme && tsc && rollup -c rollup.config.mjs",
     "prepublishOnly": "npm run build",
     "serve": "cd example && npx ng serve",
     "version:patch": "npm version patch --git-tag-version false",
