@@ -40,15 +40,13 @@ data class RecurrenceRule(
         stringBuilder.append("FREQ=${frequency};")
         stringBuilder.append("INTERVAL=${interval};")
 
-        when {
-            end != null -> {
-                val instant = end.let { Instant.ofEpochMilli(it).atZone(ZoneId.of("UTC")) }
-                stringBuilder.append(
-                    "UNTIL=${
-                        DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'").format(instant)
-                    };"
-                )
-            }
+        if (end != null) {
+            val instant = Instant.ofEpochMilli(end).atZone(ZoneId.of("UTC"))
+            stringBuilder.append(
+                "UNTIL=${
+                    DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'").format(instant)
+                };"
+            )
         }
 
         return stringBuilder.removeSuffix(";").toString()
