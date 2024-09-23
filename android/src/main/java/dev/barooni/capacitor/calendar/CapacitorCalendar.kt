@@ -6,12 +6,15 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.CalendarContract
-import android.util.Log
 import com.getcapacitor.JSArray
 import com.getcapacitor.JSObject
-import dev.barooni.capacitor.calendar.model.RecurrenceRule
+import dev.barooni.capacitor.calendar.model.CalendarEvent
+import dev.barooni.capacitor.calendar.model.EventReminder
 import java.util.Calendar
 import java.util.TimeZone
+
+// TODO: Somehow get rid of this...
+private const val INTERNAL_CALENDAR_NAME = "INTERNAL_CALENDAR_NAME"
 
 class CapacitorCalendar {
     var eventIdsArray: List<Long> = emptyList()
@@ -95,20 +98,19 @@ class CapacitorCalendar {
                 selectionArgs,
                 null,
             )?.use { cursor ->
-                if (cursor.moveToFirst()) {
-                    val idColumnIndex = cursor.getColumnIndex(CalendarContract.Calendars._ID)
-                    val nameColumnIndex = cursor.getColumnIndex(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME)
-                    val id = cursor.getLong(idColumnIndex)
-                    val title = cursor.getString(nameColumnIndex)
-
-                    val calendarObject =
-                        JSObject().apply {
-                            put("id", id.toString())
-                            put("title", title)
-                        }
-                    return calendarObject
-                } else {
+                if (!cursor.moveToFirst()) {
                     return null
+                }
+
+                val idColumnIndex = cursor.getColumnIndex(CalendarContract.Calendars._ID)
+                val nameColumnIndex =
+                    cursor.getColumnIndex(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME)
+                val id = cursor.getLong(idColumnIndex)
+                val title = cursor.getString(nameColumnIndex)
+
+                JSObject().apply {
+                    put("id", id.toString())
+                    put("title", title)
                 }
             }
         throw Exception("No primary calendar found")
@@ -117,58 +119,33 @@ class CapacitorCalendar {
     @Throws(Exception::class)
     fun createEvent(
         context: Context,
-        title: String,
-        calendarId: String?,
-        location: String?,
-        startDate: Long?,
-        endDate: Long?,
-        isAllDay: Boolean?,
-        alertOffsetInMinutesSingle: Float?,
-        alertOffsetInMinutesMultiple: JSArray?,
-        url: String?,
-        notes: String?,
-        recurrenceRule: RecurrenceRule?,
+        event: CalendarEvent,
+        reminder: List<EventReminder>,
     ): Uri {
-        val startMillis = startDate ?: Calendar.getInstance().timeInMillis
-        val endMillis = endDate ?: (startMillis + 3600 * 1000)
+        val eventValues = from(context, event)
 
-        val eventValues =
-            ContentValues().apply {
-                put(CalendarContract.Events.DTSTART, startMillis)
-                put(CalendarContract.Events.DTEND, endMillis)
-                put(CalendarContract.Events.TITLE, title)
-                location?.let { put(CalendarContract.Events.EVENT_LOCATION, it) }
-                put(CalendarContract.Events.CALENDAR_ID, calendarId ?: getDefaultCalendar(context)?.getString("id"))
-                put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().id)
-                isAllDay?.let { put(CalendarContract.Events.ALL_DAY, if (it) 1 else 0) }
-                put(CalendarContract.Events.DESCRIPTION, listOfNotNull(notes, url?.let { "URL: $it" }).joinToString("\n"))
-                recurrenceRule?.let { put(CalendarContract.Events.RRULE, it.toString()) }
-            }
+        val insertUri = CalendarContract.Events.CONTENT_URI.buildUpon()
+            .appendQueryParameter(
+                CalendarContract.CALLER_IS_SYNCADAPTER,
+                "true"
+            )
+            .appendQueryParameter(
+                CalendarContract.Calendars.ACCOUNT_TYPE,
+                CalendarContract.ACCOUNT_TYPE_LOCAL
+            )
+            .appendQueryParameter(
+                CalendarContract.Calendars.ACCOUNT_NAME,
+                INTERNAL_CALENDAR_NAME
+            )
+            .build()
 
-        val eventUri = context.contentResolver.insert(CalendarContract.Events.CONTENT_URI, eventValues)
-        val eventId = eventUri?.lastPathSegment?.toLong() ?: throw IllegalArgumentException("Failed to convert event id to long")
+        val eventUri = context.contentResolver.insert(insertUri, eventValues)
+        val eventId = eventUri?.lastPathSegment?.toLong()
+            ?: throw IllegalArgumentException("Failed to convert event id to long")
 
-        when {
-            alertOffsetInMinutesSingle != null && alertOffsetInMinutesSingle > -1 -> {
-                val alertValues = createAlertValues(eventId, alertOffsetInMinutesSingle)
-                context.contentResolver.insert(CalendarContract.Reminders.CONTENT_URI, alertValues)
-            }
-            alertOffsetInMinutesMultiple != null -> {
-                alertOffsetInMinutesMultiple
-                    .toList<Any>()
-                    .mapNotNull { alert ->
-                        try {
-                            val alertFloat = alert.toString().toFloat()
-                            if (alertFloat > -1) alertFloat else null
-                        } catch (e: NumberFormatException) {
-                            Log.e("Error", "Failed to convert alert to float: $alert", e)
-                            null
-                        }
-                    }.forEach { alertFloat ->
-                        val alertValues = createAlertValues(eventId, alertFloat)
-                        context.contentResolver.insert(CalendarContract.Reminders.CONTENT_URI, alertValues)
-                    }
-            }
+        reminder.forEach {
+            val alertValues = createAlertValues(eventId, it.offset)
+            context.contentResolver.insert(CalendarContract.Reminders.CONTENT_URI, alertValues)
         }
 
         return eventUri
@@ -178,7 +155,7 @@ class CapacitorCalendar {
     fun createCalendar(context: Context, name: String, color: String?): Uri {
         val calendarValues =
             ContentValues().apply {
-                put(CalendarContract.SyncState.ACCOUNT_NAME, name)
+                put(CalendarContract.SyncState.ACCOUNT_NAME, INTERNAL_CALENDAR_NAME)
                 put(CalendarContract.SyncState.ACCOUNT_TYPE, CalendarContract.ACCOUNT_TYPE_LOCAL)
                 put(CalendarContract.Calendars.NAME, name)
                 put(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME, name)
@@ -188,7 +165,7 @@ class CapacitorCalendar {
 
         val calendarsUri = CalendarContract.Calendars.CONTENT_URI.buildUpon()
             .appendQueryParameter(CalendarContract.CALLER_IS_SYNCADAPTER, "true")
-            .appendQueryParameter(CalendarContract.SyncState.ACCOUNT_NAME, name)
+            .appendQueryParameter(CalendarContract.SyncState.ACCOUNT_NAME, INTERNAL_CALENDAR_NAME)
             .appendQueryParameter(
                 CalendarContract.SyncState.ACCOUNT_TYPE,
                 CalendarContract.ACCOUNT_TYPE_LOCAL
@@ -208,36 +185,14 @@ class CapacitorCalendar {
     fun modifyEvent(
         context: Context,
         id: Long,
-        update: JSObject,
+        update: CalendarEvent,
     ): Boolean {
-        val title = update.getString("title")
-        val calendarId = update.getString("calendarId")
-        val location = update.getString("location")
-        val startDate = update.getLong("startDate")
-        val endDate = update.getLong("endDate")
-        val isAllDay = update.getBoolean("isAllDay")
-        val url = update.getString("url")
-        val notes = update.getString("notes")
-
         val eventUri: Uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, id)
 
-        val values =
-            ContentValues().apply {
-                if (title != null) put(CalendarContract.Events.TITLE, title)
-                if (calendarId != null) put(CalendarContract.Events.CALENDAR_ID, calendarId)
-                if (location != null) put(CalendarContract.Events.EVENT_LOCATION, location)
-                if (startDate != null) put(CalendarContract.Events.DTSTART, startDate)
-                if (endDate != null) put(CalendarContract.Events.DTEND, endDate)
-                if (isAllDay != null) put(CalendarContract.Events.ALL_DAY, if (isAllDay) 1 else 0)
-                if (notes !=
-                    null
-                ) {
-                    put(CalendarContract.Events.DESCRIPTION, listOfNotNull(notes, url?.let { "URL: $it" }).joinToString("\n"))
-                }
-            }
+        val contentValues = from(context, update)
 
-        val rows: Int = context.contentResolver.update(eventUri, values, null, null)
-        return rows > 0
+        val updatedRows = context.contentResolver.update(eventUri, contentValues, null, null)
+        return updatedRows > 0
     }
 
     private fun createAlertValues(
@@ -383,9 +338,29 @@ class CapacitorCalendar {
         return ret
     }
 
-    fun getTimeZoneAbbreviation(timeZoneId: String): String {
+    private fun getTimeZoneAbbreviation(timeZoneId: String): String {
         val timeZone = TimeZone.getTimeZone(timeZoneId)
         val now = Calendar.getInstance(timeZone)
         return timeZone.getDisplayName(timeZone.inDaylightTime(now.time), TimeZone.SHORT)
+    }
+
+    private fun from(context: Context, event: CalendarEvent): ContentValues {
+        return ContentValues().apply {
+            put(CalendarContract.Events.DTSTART, event.startMillis)
+            put(CalendarContract.Events.DTEND, event.endMillis)
+            put(CalendarContract.Events.TITLE, event.title)
+            event.location?.let { put(CalendarContract.Events.EVENT_LOCATION, it) }
+            put(
+                CalendarContract.Events.CALENDAR_ID,
+                event.calendarId ?: getDefaultCalendar(context)?.getString("id")
+            )
+            put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().id)
+            event.isAllDay?.let { put(CalendarContract.Events.ALL_DAY, if (it) 1 else 0) }
+            put(
+                CalendarContract.Events.DESCRIPTION,
+                listOfNotNull(event.notes, event.url?.let { "URL: $it" }).joinToString("\n")
+            )
+            event.recurrenceRule?.let { put(CalendarContract.Events.RRULE, it.toString()) }
+        }
     }
 }
