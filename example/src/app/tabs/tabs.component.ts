@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IonBadge, IonIcon, IonLabel, IonTabBar, IonTabButton, IonTabs } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { codeSlashOutline, clipboardOutline, settingsOutline } from 'ionicons/icons';
+import {codeSlashOutline, clipboardOutline, settingsOutline, hammerOutline} from 'ionicons/icons';
 import { LetDirective } from '@ngrx/component';
 import { StoreService } from '../store/store.service';
 
@@ -14,6 +14,7 @@ import { StoreService } from '../store/store.service';
 export class TabsComponent {
   constructor(readonly storeService: StoreService) {
     addIcons({
+      'hammer-outline': hammerOutline,
       'code-slash-outline': codeSlashOutline,
       'clipboard-outline': clipboardOutline,
       'settings-outline': settingsOutline,

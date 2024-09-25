@@ -1,12 +1,13 @@
-import { ApplicationConfig } from '@angular/core';
+import {ApplicationConfig} from '@angular/core';
 
-import { provideIonicAngular } from '@ionic/angular/standalone';
-import { provideRouter, Routes } from '@angular/router';
-import { TabsComponent } from './tabs/tabs.component';
-import { ApiComponent } from './tabs/api/api.component';
-import { SettingsComponent } from './tabs/settings/settings.component';
-import { LogsComponent } from './tabs/logs/logs.component';
-import { provideStore } from './store/provide-store';
+import {provideIonicAngular} from '@ionic/angular/standalone';
+import {provideRouter, Routes} from '@angular/router';
+import {TabsComponent} from './tabs/tabs.component';
+import {ApiComponent} from './tabs/api/api.component';
+import {SettingsComponent} from './tabs/settings/settings.component';
+import {LogsComponent} from './tabs/logs/logs.component';
+import {provideStore} from './store/provide-store';
+import {TestComponent} from "./tabs/test/test.component";
 
 const routes: Routes = [
   {
@@ -24,6 +25,10 @@ const routes: Routes = [
       {
         path: 'logs',
         component: LogsComponent,
+      },
+      {
+        path: 'test',
+        component: TestComponent,
       },
       {
         path: '',
