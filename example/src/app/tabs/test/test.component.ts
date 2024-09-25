@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {IonButton, IonContent, IonItem, IonLabel, IonList} from "@ionic/angular/standalone";
 import {HeaderComponent} from "../../components/header/header.component";
-import {CapacitorCalendar, ReminderRecurrenceFrequency} from "@ebarooni/capacitor-calendar";
+import {CapacitorCalendar, EventSpan, ReminderRecurrenceFrequency} from "@ebarooni/capacitor-calendar";
 import {StoreService} from "../../store/store.service";
 
 @Component({
@@ -128,7 +128,8 @@ export class TestComponent implements OnInit {
         startDate: now + (60 * 60 * 1000),
         endDate: now + (2 * 60 * 60 * 1000),
         calendarId: this.lastCreatedCalendar
-      }
+      },
+      span: EventSpan.THIS_AND_FUTURE_EVENTS
     }).then()
       .catch((error) => this.storeService.dispatchLog(JSON.stringify(error)));
   }
