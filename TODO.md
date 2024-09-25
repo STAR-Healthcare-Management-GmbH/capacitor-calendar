@@ -1,5 +1,5 @@
 1. Update methods to account for recurrence rule
-    1. `modifyEvent`
-    2. `createEvent`
-    3. (Optional) `modifyEventWithPrompt`
-    4. (Optional) `createEventWithPrompt`
+    1. (Optional) `modifyEventWithPrompt`
+    2. (Optional) `createEventWithPrompt`
+
+2. Refactor out default calendar and force calendar id in on API level
