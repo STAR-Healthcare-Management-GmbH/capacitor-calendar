@@ -22,7 +22,7 @@ data class CalendarEvent(
     companion object {
         fun fromJSObject(jsObject: JSObject): CalendarEvent {
             val title = jsObject.getString("title")
-                ?: throw Exception("[CapacitorCalendar.${::fromPluginCall.name}] A title for the event was not provided")
+                ?: throw Exception("[CapacitorCalendar.${::fromJSObject.name}] A title for the event was not provided")
             val calendarId = jsObject.getString("calendarId")
             val location = jsObject.getString("location")
             val startDate = jsObject.getString("startDate")
