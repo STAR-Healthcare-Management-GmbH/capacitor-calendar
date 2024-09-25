@@ -631,7 +631,7 @@ export interface CapacitorCalendarPlugin {
    * @param {Object} options The options for updating an event.
    * @param {string} options.id The id of the event to be modified.
    * @param {EventSpan} options.span The scope of the modifications.
-   * Only supported on iOS. (Optional)
+   * Only supported on iOS. If not supplied it will only affect this event. (Optional)
    * @param {Object} options.update The set of event properties to be modified.
    * If a property is not supported, it will be ignored. Modifying the reminder of an
    * event is currently not supported on Android.
