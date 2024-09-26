@@ -414,11 +414,12 @@ export interface CapacitorCalendarPlugin {
    *
    * @async
    * @since 5.2.0
-   * @platform iOS
+   * @platform iOS, Android
    * @permissions
    * <h3>Runtime Permissions:</h3>
    * <ul>
    *   <li><strong>iOS:</strong> readCalendar, writeCalendar</li>
+   *   <li><strong>Android:</strong> readCalendar, writeCalendar</li>
    * </ul>
    * @param {object} options Options for creating a calendar.
    * @param {string} options.title The title of the calendar to create.
@@ -427,10 +428,8 @@ export interface CapacitorCalendarPlugin {
    * @param {string} options.sourceId The id of the source of the calendar.
    * If not provided, the source of the default calendar will be used. It is
    * recommended to use fetchAllCalendarSources method to fetch the id of the
-   * desired source type.
-   *
-   * TODO: Add sourceId will be ignored on android (will be added as a local calendar)
-   * TODO: Add android to @platform in JsDoc
+   * desired source type. (iOS only) This will be ignored on Android and will
+   * just create a local calendar.
    *
    * @returns {Promise<{ result: string }>} The id of the created calendar.
    * @example
@@ -452,16 +451,15 @@ export interface CapacitorCalendarPlugin {
    *
    * @async
    * @since 5.2.0
-   * @platform iOS
+   * @platform iOS, Android
    * @permissions
    * <h3>Runtime Permissions:</h3>
    * <ul>
    *   <li><strong>iOS:</strong> readCalendar, writeCalendar</li>
+   *   <li><strong>Android:</strong> readCalendar, writeCalendar</li>
    * </ul>
    * @param {object} options Options for deleting a calendar.
    * @param {string} options.id The id of the calendar to delete.
-   *
-   * TODO: Update to include android
    *
    * @example
    * await CapacitorCalendar.deleteCalendar({ id: 'ID_1' });
