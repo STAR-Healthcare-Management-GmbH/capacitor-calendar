@@ -2,4 +2,4 @@
     1. (Optional) `modifyEventWithPrompt`
     2. (Optional) `createEventWithPrompt`
 
-2. Refactor out default calendar and force calendar id in on API level
+2. Remove test component from example app
