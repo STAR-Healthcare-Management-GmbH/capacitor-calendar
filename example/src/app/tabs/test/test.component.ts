@@ -127,7 +127,11 @@ export class TestComponent implements OnInit {
         title: "Updated Title",
         startDate: now + (60 * 60 * 1000),
         endDate: now + (2 * 60 * 60 * 1000),
-        calendarId: this.lastCreatedCalendar
+        calendarId: this.lastCreatedCalendar,
+        recurrence: {
+          frequency: ReminderRecurrenceFrequency.WEEKLY,
+          interval: 1
+        }
       },
       span: EventSpan.THIS_AND_FUTURE_EVENTS
     }).then()
