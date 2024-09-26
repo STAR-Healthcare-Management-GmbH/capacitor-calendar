@@ -160,9 +160,7 @@ class CapacitorCalendar {
             put(CalendarContract.Calendars.ACCOUNT_TYPE, accountType)
             put(CalendarContract.Calendars.NAME, INTERNAL_CALENDAR_NAME)
             put(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME, name)
-            put(
-                CalendarContract.Calendars.CALENDAR_COLOR, color ?: 0xFF75151E.toString()
-            )
+            color?.let { put(CalendarContract.Calendars.CALENDAR_COLOR, it) }
             put(
                 CalendarContract.Calendars.CALENDAR_ACCESS_LEVEL,
                 CalendarContract.Calendars.CAL_ACCESS_OWNER
