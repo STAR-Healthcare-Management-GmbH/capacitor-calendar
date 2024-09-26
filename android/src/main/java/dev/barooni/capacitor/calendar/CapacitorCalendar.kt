@@ -153,26 +153,36 @@ class CapacitorCalendar {
 
     @Throws(Exception::class)
     fun createCalendar(context: Context, name: String, color: String?): Uri {
-        val calendarValues =
-            ContentValues().apply {
-                put(CalendarContract.SyncState.ACCOUNT_NAME, INTERNAL_CALENDAR_NAME)
-                put(CalendarContract.SyncState.ACCOUNT_TYPE, CalendarContract.ACCOUNT_TYPE_LOCAL)
-                put(CalendarContract.Calendars.NAME, name)
-                put(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME, name)
-                color?.let { put(CalendarContract.Calendars.CALENDAR_COLOR, color) }
-                put(CalendarContract.Calendars.VISIBLE, 1)
-            }
+        val accountType = CalendarContract.ACCOUNT_TYPE_LOCAL
+
+        val calendarValues = ContentValues().apply {
+            put(CalendarContract.Calendars.ACCOUNT_NAME, INTERNAL_CALENDAR_NAME)
+            put(CalendarContract.Calendars.ACCOUNT_TYPE, accountType)
+            put(CalendarContract.Calendars.NAME, INTERNAL_CALENDAR_NAME)
+            put(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME, name)
+            put(
+                CalendarContract.Calendars.CALENDAR_COLOR, color ?: 0xFF75151E.toString()
+            )
+            put(
+                CalendarContract.Calendars.CALENDAR_ACCESS_LEVEL,
+                CalendarContract.Calendars.CAL_ACCESS_OWNER
+            )
+            put(CalendarContract.Calendars.OWNER_ACCOUNT, INTERNAL_CALENDAR_NAME)
+            put(CalendarContract.Calendars.SYNC_EVENTS, 1)
+            put(CalendarContract.Calendars.VISIBLE, 1)
+        }
 
         val calendarsUri = CalendarContract.Calendars.CONTENT_URI.buildUpon()
             .appendQueryParameter(CalendarContract.CALLER_IS_SYNCADAPTER, "true")
-            .appendQueryParameter(CalendarContract.SyncState.ACCOUNT_NAME, INTERNAL_CALENDAR_NAME)
+            .appendQueryParameter(CalendarContract.Calendars.ACCOUNT_NAME, INTERNAL_CALENDAR_NAME)
             .appendQueryParameter(
-                CalendarContract.SyncState.ACCOUNT_TYPE,
+                CalendarContract.Calendars.ACCOUNT_TYPE,
                 CalendarContract.ACCOUNT_TYPE_LOCAL
             )
             .build()
 
-        return context.contentResolver.insert(calendarsUri, calendarValues)?: throw Exception("Calendar was not created")
+        return context.contentResolver.insert(calendarsUri, calendarValues)
+            ?: throw Exception("Calendar was not created")
     }
 
     fun deleteCalendar(context: Context, id: Long): Boolean {
