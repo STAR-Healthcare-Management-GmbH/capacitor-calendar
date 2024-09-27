@@ -100,7 +100,7 @@ class CapacitorCalendar {
                 selectionArgs,
                 null,
             )?.use { cursor ->
-                return if (!cursor.moveToFirst()) {
+                if (!cursor.moveToFirst()) {
                     return null
                 }
 
