@@ -58,8 +58,10 @@ class CapacitorCalendar {
                 null,
             )?.use { cursor ->
                 val idColumnIndex = cursor.getColumnIndex(CalendarContract.Calendars._ID)
-                val nameColumnIndex = cursor.getColumnIndex(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME)
-                val calendarColorColumnIndex = cursor.getColumnIndex(CalendarContract.Calendars.CALENDAR_COLOR)
+                val nameColumnIndex =
+                    cursor.getColumnIndex(CalendarContract.Calendars.CALENDAR_DISPLAY_NAME)
+                val calendarColorColumnIndex =
+                    cursor.getColumnIndex(CalendarContract.Calendars.CALENDAR_COLOR)
 
                 while (cursor.moveToNext()) {
                     val id = cursor.getLong(idColumnIndex)
@@ -98,7 +100,7 @@ class CapacitorCalendar {
                 selectionArgs,
                 null,
             )?.use { cursor ->
-                if (!cursor.moveToFirst()) {
+                return if (!cursor.moveToFirst()) {
                     return null
                 }
 
@@ -124,22 +126,8 @@ class CapacitorCalendar {
     ): Uri {
         val eventValues = from(context, event)
 
-        val insertUri = CalendarContract.Events.CONTENT_URI.buildUpon()
-            .appendQueryParameter(
-                CalendarContract.CALLER_IS_SYNCADAPTER,
-                "true"
-            )
-            .appendQueryParameter(
-                CalendarContract.Calendars.ACCOUNT_TYPE,
-                CalendarContract.ACCOUNT_TYPE_LOCAL
-            )
-            .appendQueryParameter(
-                CalendarContract.Calendars.ACCOUNT_NAME,
-                INTERNAL_CALENDAR_NAME
-            )
-            .build()
-
-        val eventUri = context.contentResolver.insert(insertUri, eventValues)
+        val eventUri =
+            context.contentResolver.insert(CalendarContract.Events.CONTENT_URI, eventValues)
         val eventId = eventUri?.lastPathSegment?.toLong()
             ?: throw IllegalArgumentException("Failed to convert event id to long")
 
@@ -241,7 +229,8 @@ class CapacitorCalendar {
                 CalendarContract.Events.ALL_DAY,
                 CalendarContract.Events.CALENDAR_ID,
             )
-        val selection = "(${CalendarContract.Events.DTSTART} >= ?) AND (${CalendarContract.Events.DTEND} <= ?)"
+        val selection =
+            "(${CalendarContract.Events.DTSTART} >= ?) AND (${CalendarContract.Events.DTEND} <= ?)"
         val selectionArgs = arrayOf(startDate.toString(), endDate.toString())
 
         val events = JSArray()
@@ -256,17 +245,23 @@ class CapacitorCalendar {
             )?.use { cursor ->
                 val idColumnIndex = cursor.getColumnIndex(CalendarContract.Events._ID)
                 val nameColumnIndex = cursor.getColumnIndex(CalendarContract.Events.TITLE)
-                val locationColumnIndex = cursor.getColumnIndex(CalendarContract.Events.EVENT_LOCATION)
-                val calendarColorColumnIndex = cursor.getColumnIndex(CalendarContract.Events.CALENDAR_COLOR)
+                val locationColumnIndex =
+                    cursor.getColumnIndex(CalendarContract.Events.EVENT_LOCATION)
+                val calendarColorColumnIndex =
+                    cursor.getColumnIndex(CalendarContract.Events.CALENDAR_COLOR)
                 val organizerColumnIndex = cursor.getColumnIndex(CalendarContract.Events.ORGANIZER)
-                val descriptionColumnIndex = cursor.getColumnIndex(CalendarContract.Events.DESCRIPTION)
+                val descriptionColumnIndex =
+                    cursor.getColumnIndex(CalendarContract.Events.DESCRIPTION)
                 val dtStartColumnIndex = cursor.getColumnIndex(CalendarContract.Events.DTSTART)
                 val dtEndColumnIndex = cursor.getColumnIndex(CalendarContract.Events.DTEND)
-                val eventTimezoneColumnIndex = cursor.getColumnIndex(CalendarContract.Events.EVENT_TIMEZONE)
-                val eventEndTimezoneColumnIndex = cursor.getColumnIndex(CalendarContract.Events.EVENT_END_TIMEZONE)
+                val eventTimezoneColumnIndex =
+                    cursor.getColumnIndex(CalendarContract.Events.EVENT_TIMEZONE)
+                val eventEndTimezoneColumnIndex =
+                    cursor.getColumnIndex(CalendarContract.Events.EVENT_END_TIMEZONE)
                 val durationColumnIndex = cursor.getColumnIndex(CalendarContract.Events.DURATION)
                 val isAllDayColumnIndex = cursor.getColumnIndex(CalendarContract.Events.ALL_DAY)
-                val calendarIdColumnIndex = cursor.getColumnIndex(CalendarContract.Events.CALENDAR_ID)
+                val calendarIdColumnIndex =
+                    cursor.getColumnIndex(CalendarContract.Events.CALENDAR_ID)
 
                 while (cursor.moveToNext()) {
                     val id = cursor.getLong(idColumnIndex)
@@ -288,7 +283,8 @@ class CapacitorCalendar {
                             put("id", id.toString())
                             title?.takeIf { it.isNotEmpty() }?.let { put("title", it) }
                             location?.takeIf { it.isNotEmpty() }?.let { put("location", it) }
-                            calendarColor.takeIf { it != 0 }?.let { put("eventColor", String.format("#%06X", 0xFFFFFF and it)) }
+                            calendarColor.takeIf { it != 0 }
+                                ?.let { put("eventColor", String.format("#%06X", 0xFFFFFF and it)) }
                             organizer?.takeIf { it.isNotEmpty() }?.let { put("organizer", it) }
                             desc?.takeIf { it.isNotEmpty() }?.let { put("description", it) }
                             dtStart.takeIf { it != 0.toLong() }?.let { put("startDate", it) }
@@ -309,7 +305,8 @@ class CapacitorCalendar {
                             }
                             duration?.takeIf { it.isNotEmpty() }?.let { put("duration", it) }
                             put("isAllDay", allDay)
-                            calendarId.takeIf { it != 0.toLong() }?.let { put("calendarId", it.toString()) }
+                            calendarId.takeIf { it != 0.toLong() }
+                                ?.let { put("calendarId", it.toString()) }
                         }
                     events.put(event)
                 }
@@ -324,16 +321,17 @@ class CapacitorCalendar {
     ): JSObject {
         val deletedEvents = JSArray()
         val failedToDeleteEvents = JSArray()
-        val contentResolver = context.contentResolver
 
         ids.toList<String>().forEach { id ->
             try {
-                val uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, id.toLong())
-                val rowsDeleted = contentResolver.delete(uri, null, null)
-                if (rowsDeleted > 0) {
-                    deletedEvents.put(id)
-                } else {
-                    failedToDeleteEvents.put(id)
+                when {
+                    deleteEventById(context, id) -> {
+                        deletedEvents.put(id)
+                    }
+
+                    else -> {
+                        failedToDeleteEvents.put(id)
+                    }
                 }
             } catch (error: Exception) {
                 failedToDeleteEvents.put(id)
@@ -344,6 +342,13 @@ class CapacitorCalendar {
         ret.put("deleted", deletedEvents)
         ret.put("failed", failedToDeleteEvents)
         return ret
+    }
+
+    @Throws(Exception::class)
+    fun deleteEventById(context: Context, id: String): Boolean {
+        val deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, id.toLong())
+        val deletedRows = context.contentResolver.delete(deleteUri, null, null)
+        return deletedRows > 0
     }
 
     private fun getTimeZoneAbbreviation(timeZoneId: String): String {

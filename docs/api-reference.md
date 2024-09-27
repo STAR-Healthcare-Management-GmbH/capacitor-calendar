@@ -18,6 +18,7 @@
 * [`openReminders()`](#openreminders)
 * [`listEventsInRange(...)`](#listeventsinrange)
 * [`deleteEventsById(...)`](#deleteeventsbyid)
+* [`deleteEventById(...)`](#deleteeventbyid)
 * [`createCalendar(...)`](#createcalendar)
 * [`deleteCalendar(...)`](#deletecalendar)
 * [`getRemindersFromLists(...)`](#getremindersfromlists)
@@ -293,6 +294,8 @@ deleteEventsById(options: { ids: string[]; }) => Promise<{ result: { deleted: st
 ```
 
 Deletes events from the calendar given their IDs.
+If the event is recurring it will automatically delete this and future events.
+To modify this behaviour consider using the method "deleteEventById".
 
 | Param         | Type                            | Description                     |
 | ------------- | ------------------------------- | ------------------------------- |
@@ -301,6 +304,25 @@ Deletes events from the calendar given their IDs.
 **Returns:** <code>Promise&lt;{ result: { deleted: string[]; failed: string[]; }; }&gt;</code>
 
 **Since:** 0.11.0
+
+--------------------
+
+
+### deleteEventById(...)
+
+```typescript
+deleteEventById(options: { id: string; span?: EventSpan; }) => Promise<{ result: string; }>
+```
+
+Deletes an even from the calendar by their ID.
+
+| Param         | Type                                                                    | Description                             |
+| ------------- | ----------------------------------------------------------------------- | --------------------------------------- |
+| **`options`** | <code>{ id: string; span?: <a href="#eventspan">EventSpan</a>; }</code> | Options for defining event ID and span. |
+
+**Returns:** <code>Promise&lt;{ result: string; }&gt;</code>
+
+**Since:** TODO: Add version number
 
 --------------------
 

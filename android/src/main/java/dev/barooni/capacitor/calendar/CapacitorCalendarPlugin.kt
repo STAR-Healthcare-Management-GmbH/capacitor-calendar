@@ -139,13 +139,13 @@ class CapacitorCalendarPlugin : Plugin() {
     @PluginMethod(returnType = PluginMethod.RETURN_PROMISE)
     fun modifyEventWithPrompt(call: PluginCall) {
         try {
-            val stringId =
-                call.getString("id") ?: throw Exception("[CapacitorCalendar.${::modifyEventWithPrompt.name}] Event ID not defined")
+            val stringId = call.getString("id") ?: throw Exception("[CapacitorCalendar.${::modifyEventWithPrompt.name}] Event ID not defined")
             val update = call.getObject("update")
+
+            val calendarEvent = CalendarEvent.fromJSObject(update)
+
             val uri: Uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, stringId.toLong())
-            val intent =
-                Intent(Intent.ACTION_EDIT)
-                    .setData(uri)
+            val intent = Intent(Intent.ACTION_EDIT).setData(uri)
 
             if (update != null) {
                 val title = update.getString("title")
@@ -399,7 +399,7 @@ class CapacitorCalendarPlugin : Plugin() {
                 EventReminder.from(alertOffsetInMinutes)
             )
 
-            val id = eventUri?.lastPathSegment ?: throw IllegalArgumentException("Failed to insert event into calendar")
+            val id = eventUri.lastPathSegment ?: throw IllegalArgumentException("Failed to insert event into calendar")
             val ret = JSObject()
             ret.put("result", id)
             call.resolve(ret)
@@ -524,6 +524,36 @@ class CapacitorCalendarPlugin : Plugin() {
             call.reject("", "[CapacitorCalendar.${::deleteEventsById.name}] Could not delete events")
             return
         }
+    }
+
+    @PluginMethod(returnType = PluginMethod.RETURN_PROMISE)
+    fun deleteEventById(call: PluginCall) {
+        try {
+            val id = call.getString("id")
+                ?: throw Exception("[CapacitorCalendar.${::deleteEventById.name}] Event ids were not provided")
+
+            if (implementation.deleteEventById(context, id)) {
+                call.resolve(JSObject().apply {
+                    put("result", id)
+                })
+            }
+
+            throw Exception("Event was not deleted")
+        } catch (error: Exception) {
+            call.reject("", "[CapacitorCalendar.${::deleteEventById.name}] Could not delete event", error)
+        }
+    }
+
+    @PluginMethod(returnType = PluginMethod.RETURN_PROMISE)
+    fun createCalendar(call: PluginCall) {
+        call.unimplemented("[CapacitorCalendar.${::createCalendar.name}] Not implemented on Android")
+        return
+    }
+
+    @PluginMethod(returnType = PluginMethod.RETURN_PROMISE)
+    fun deleteCalendar(call: PluginCall) {
+        call.unimplemented("[CapacitorCalendar.${::deleteCalendar.name}] Not implemented on Android")
+        return
     }
 
     @PluginMethod(returnType = PluginMethod.RETURN_PROMISE)

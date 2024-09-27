@@ -383,6 +383,8 @@ export interface CapacitorCalendarPlugin {
 
   /**
    * Deletes events from the calendar given their IDs.
+   * If the event is recurring it will automatically delete this and future events.
+   * To modify this behaviour consider using the method "deleteEventById".
    *
    * @async
    * @since 0.11.0
@@ -406,8 +408,31 @@ export interface CapacitorCalendarPlugin {
    * console.log(result.failed) // ['ID_DOES_NOT_EXIST']
    */
   deleteEventsById(options: {
-    ids: string[];
+    ids: string[]
   }): Promise<{ result: { deleted: string[]; failed: string[] } }>;
+
+  /**
+   * Deletes an even from the calendar by their ID.
+   *
+   * @async
+   * @since TODO: Add version number
+   * @platform iOS, Android
+   * @permissions
+   * <h3>Runtime Permissions:</h3>
+   * <ul>
+   *   <li><strong>iOS:</strong> writeCalendar</li>
+   *   <li><strong>Android:</strong> writeCalendar</li>
+   * </ul>
+   * @param {object} options Options for defining event ID and span.
+   * @param {number} options.ids The ID of the event that should be deleted.
+   * @returns {Promise<{ result: string }>}
+   * A promise that resolves to an object with one property:
+   *  - result: string - The ID of the deleted event.
+   * @example
+   * const { result } = await CapacitorCalendar.deleteEventsById("ID_1")
+   * console.log(result.deleted)  // ['ID_1']
+   */
+  deleteEventById(options: {id: string, span?: EventSpan}): Promise<{ result: string }>;
 
   /**
    * Creates a calendar

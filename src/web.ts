@@ -154,6 +154,12 @@ export class CapacitorCalendarWeb
     );
   }
 
+  public deleteEventById(_options: { id: string, span?: EventSpan }): Promise<{ result: string }> {
+    throw this.unimplemented(
+      `${this.deleteEventById.name} is not implemented on the web`,
+    );
+  }
+
   public createCalendar(_options: {
     title: string;
     color?: string;
