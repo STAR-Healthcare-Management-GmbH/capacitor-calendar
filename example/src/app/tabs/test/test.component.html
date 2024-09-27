@@ -12,8 +12,8 @@
     <ion-item button [detail]="true" (click)="createCalendar()">
       <ion-label>{{ createCalendar.name }}</ion-label>
     </ion-item>
-    <ion-item button [detail]="true" (click)="createEventNonRecurringWithReminderAndAlert()">
-      <ion-label>{{ createEventNonRecurringWithReminderAndAlert.name }}</ion-label>
+    <ion-item button [detail]="true" (click)="createEventNonRecurring()">
+      <ion-label>{{ createEventNonRecurring.name }}</ion-label>
     </ion-item>
     <ion-item button [detail]="true" (click)="createEventRecurring()">
       <ion-label>{{ createEventRecurring.name }}</ion-label>
@@ -24,8 +24,11 @@
     <ion-item button [detail]="true" (click)="modifyEventRecurring()">
       <ion-label>{{ modifyEventRecurring.name }}</ion-label>
     </ion-item>
-    <ion-item button [detail]="true" (click)="deleteAllReminders()">
-      <ion-label>{{ deleteAllReminders.name }}</ion-label>
+    <ion-item button [detail]="true" (click)="deleteEventNonRecurring()">
+      <ion-label>{{ deleteEventNonRecurring.name }}</ion-label>
+    </ion-item>
+    <ion-item button [detail]="true" (click)="deleteEventRecurring()">
+      <ion-label>{{ deleteEventRecurring.name }}</ion-label>
     </ion-item>
     <ion-item button [detail]="true" (click)="deleteAllEvents()">
       <ion-label>{{ deleteAllEvents.name }}</ion-label>

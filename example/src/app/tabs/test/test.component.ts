@@ -15,8 +15,6 @@ export class TestComponent implements OnInit {
 
   private lastCreatedRecurringEvent: string = "";
   private lastCreatedEvent: string = "";
-  private lastCreatedReminder: string = "";
-  private lastCreatedRecurringReminder: string = "";
   private lastCreatedCalendar: string = "";
 
   constructor(
@@ -49,7 +47,7 @@ export class TestComponent implements OnInit {
     ).catch((error) => this.storeService.dispatchLog(JSON.stringify(error)));
   }
 
-  createEventNonRecurringWithReminderAndAlert() {
+  createEventNonRecurring() {
     const now = Date.now();
     const event = {
       calendarId: this.lastCreatedCalendar,
@@ -66,12 +64,6 @@ export class TestComponent implements OnInit {
     CapacitorCalendar.createEvent(event).then((response) => {
       this.storeService.dispatchLog(JSON.stringify(response))
       this.lastCreatedEvent = response.result
-    }).catch((error) => this.storeService.dispatchLog(JSON.stringify(error)));
-    CapacitorCalendar.createReminder({
-      title: event.title
-    }).then((response) => {
-      this.storeService.dispatchLog(JSON.stringify(response))
-      this.lastCreatedReminder = response.result
     }).catch((error) => this.storeService.dispatchLog(JSON.stringify(error)));
   }
 
@@ -95,13 +87,6 @@ export class TestComponent implements OnInit {
     CapacitorCalendar.createEvent(event).then((response) => {
       this.storeService.dispatchLog(JSON.stringify(response))
       this.lastCreatedRecurringEvent = response.result
-    }).catch((error) => this.storeService.dispatchLog(JSON.stringify(error)));
-    CapacitorCalendar.createReminder({
-      title: event.title,
-      recurrence: event.recurrence
-    }).then((response) => {
-      this.storeService.dispatchLog(JSON.stringify(response))
-      this.lastCreatedRecurringReminder = response.result
     }).catch((error) => this.storeService.dispatchLog(JSON.stringify(error)));
   }
 
@@ -138,11 +123,20 @@ export class TestComponent implements OnInit {
       .catch((error) => this.storeService.dispatchLog(JSON.stringify(error)));
   }
 
-  deleteAllReminders() {
-    CapacitorCalendar.deleteRemindersById({ids: [this.lastCreatedRecurringReminder, this.lastCreatedReminder]})
+  deleteEventNonRecurring() {
+    CapacitorCalendar.deleteEventById({id: this.lastCreatedEvent, span: EventSpan.THIS_EVENT})
       .then((response) =>
         this.storeService.dispatchLog(JSON.stringify(response)),
       ).catch((error) => this.storeService.dispatchLog(JSON.stringify(error)));
+    ;
+  }
+
+  deleteEventRecurring() {
+    CapacitorCalendar.deleteEventById({id: this.lastCreatedRecurringEvent, span: EventSpan.THIS_AND_FUTURE_EVENTS})
+      .then((response) =>
+        this.storeService.dispatchLog(JSON.stringify(response)),
+      ).catch((error) => this.storeService.dispatchLog(JSON.stringify(error)));
+    ;
   }
 
   deleteAllEvents() {
