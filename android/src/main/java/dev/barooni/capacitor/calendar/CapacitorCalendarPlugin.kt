@@ -139,32 +139,47 @@ class CapacitorCalendarPlugin : Plugin() {
     @PluginMethod(returnType = PluginMethod.RETURN_PROMISE)
     fun modifyEventWithPrompt(call: PluginCall) {
         try {
-            val stringId = call.getString("id") ?: throw Exception("[CapacitorCalendar.${::modifyEventWithPrompt.name}] Event ID not defined")
-            val update = call.getObject("update")
+            val stringId = call.getString("id")
+                ?: throw Exception("[CapacitorCalendar.${::modifyEventWithPrompt.name}] Event ID not defined")
+            val uri: Uri =
+                ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, stringId.toLong())
 
-            val calendarEvent = CalendarEvent.fromJSObject(update)
+            val calendarEvent = CalendarEvent.fromJSObject(call.getObject("update"))
 
-            val uri: Uri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, stringId.toLong())
-            val intent = Intent(Intent.ACTION_EDIT).setData(uri)
-
-            if (update != null) {
-                val title = update.getString("title")
-                val calendarId = update.getString("calendarId")
-                val location = update.getString("location")
-                val startDate = update.getLong("startDate")
-                val endDate = update.getLong("endDate")
-                val isAllDay = update.getBoolean("isAllDay")
-                val url = update.getString("url")
-                val notes = update.getString("notes")
-
-                intent.putExtra(CalendarContract.Events.TITLE, title)
-                calendarId?.let { intent.putExtra(CalendarContract.Events.CALENDAR_ID, it) }
-                location?.let { intent.putExtra(CalendarContract.Events.EVENT_LOCATION, it) }
-                startDate?.let { intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, it) }
-                endDate?.let { intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, it) }
-                isAllDay?.let { intent.putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, it) }
-                intent.putExtra(CalendarContract.Events.DESCRIPTION, listOfNotNull(notes, url?.let { "URL: $it" }).joinToString("\n"))
+            val intent = Intent(Intent.ACTION_EDIT).setData(uri).apply {
+                putExtra(CalendarContract.Events.TITLE, calendarEvent.title)
+                calendarEvent.calendarId?.let {
+                    putExtra(
+                        CalendarContract.Events.CALENDAR_ID,
+                        it
+                    )
+                }
+                calendarEvent.location?.let {
+                    putExtra(
+                        CalendarContract.Events.EVENT_LOCATION,
+                        it
+                    )
+                }
+                putExtra(
+                    CalendarContract.EXTRA_EVENT_BEGIN_TIME,
+                    calendarEvent.startMillis
+                )
+                putExtra(
+                    CalendarContract.EXTRA_EVENT_END_TIME,
+                    calendarEvent.endMillis
+                )
+                putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, calendarEvent.isAllDay)
+                putExtra(
+                    CalendarContract.Events.DESCRIPTION,
+                    listOfNotNull(
+                        calendarEvent.notes,
+                        calendarEvent.url?.let { "URL: $it" }).joinToString("\n")
+                )
+                calendarEvent.recurrenceRule?.let {
+                    putExtra(CalendarContract.Events.RRULE, it.toString())
+                }
             }
+
 
             return startActivityForResult(
                 call,
