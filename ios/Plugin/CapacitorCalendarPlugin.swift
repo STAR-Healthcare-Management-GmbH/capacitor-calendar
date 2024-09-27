@@ -512,6 +512,38 @@ public class CapacitorCalendarPlugin: CAPPlugin {
         }
     }
 
+    @objc public func deleteEventById(_ call: CAPPluginCall) 
+    {
+        guard let eventId = call.getString("id") else {
+            call.reject("[CapacitorCalendar.\(#function)] Event id were not provided")
+            return
+        }
+
+        let span = call.getInt("span", 0)
+
+        Task {
+            do {
+                let deleteResult = try await calendar.deleteEventById(id: eventId, 
+                                                                      span: span == 0 ? .thisEvent : .futureEvents)
+                
+                if deleteResult != nil
+                {
+                    call.resolve([
+                        "result": deleteResult!
+                    ])
+                }
+                else
+                {
+                    call.reject("[CapacitorCalendar.\(#function)] Could not delete events")
+                }
+            } catch 
+            {
+                call.reject("[CapacitorCalendar.\(#function)] Could not delete events")
+                return
+            }
+        }
+    }
+    
     @objc public func deleteEventsById(_ call: CAPPluginCall) {
         guard let eventIds = call.getArray("ids") else {
             call.reject("[CapacitorCalendar.\(#function)] Event ids were not provided")

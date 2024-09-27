@@ -498,6 +498,38 @@ public class CapacitorCalendar: NSObject, EKEventEditViewDelegate, EKCalendarCho
         }
     }
 
+    public func deleteEventById(id: String, span: EKSpan) async throws -> String?
+    {
+        await withCheckedContinuation { continuation in
+
+            var deletedEvent: String?
+
+            guard let event = eventStore.event(withIdentifier: "\(id)") else {
+                return
+            }
+
+            do 
+            {
+                try eventStore.remove(event, span: .futureEvents, commit: false)
+                deletedEvent = id
+            } 
+            catch 
+            {
+            }
+            
+            do 
+            {
+                try eventStore.commit()
+            } 
+            catch 
+            {
+                deletedEvent = nil
+            }
+
+            continuation.resume(returning: deletedEvent)
+        }
+    }
+    
     public func createCalendar(title: String, color: String?, sourceId: String?) throws -> String {
         let newCalendar = EKCalendar(for: .event, eventStore: eventStore)
         newCalendar.title = title
