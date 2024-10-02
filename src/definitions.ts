@@ -6,7 +6,7 @@ import type { PermissionState } from "@capacitor/core";
 import type { Calendar } from "./schemas/interfaces/calendar";
 import type { RemindersList } from "./schemas/interfaces/reminders-list";
 import type { PluginPermissionsMap } from "./schemas/interfaces/plugin-permissions-map";
-import type { ReminderRecurrenceRule } from "./schemas/interfaces/reminder-recurrence-rule";
+import type { RecurrenceRule } from "./schemas/interfaces/recurrence-rule";
 import type { CalendarEvent } from "./schemas/interfaces/calendar-event";
 import type { Reminder } from "./schemas/interfaces/reminder";
 import type { CalendarSource } from "./schemas/interfaces/calendar-source";
@@ -126,7 +126,7 @@ export interface CapacitorCalendarPlugin {
     url?: string;
     notes?: string;
     eventIdOptional?: boolean;
-    recurrence?: ReminderRecurrenceRule;
+    recurrence?: RecurrenceRule;
   }): Promise<{ result: string[] }>;
 
   /**
@@ -239,7 +239,7 @@ export interface CapacitorCalendarPlugin {
     alertOffsetInMinutes?: number | number[];
     url?: string;
     notes?: string;
-    recurrence?: ReminderRecurrenceRule;
+    recurrence?: RecurrenceRule;
   }): Promise<{ result: string }>;
 
   /**
@@ -326,7 +326,7 @@ export interface CapacitorCalendarPlugin {
     notes?: string;
     url?: string;
     location?: string;
-    recurrence?: ReminderRecurrenceRule;
+    recurrence?: RecurrenceRule;
   }): Promise<{ result: string }>;
 
   /**
@@ -635,7 +635,7 @@ export interface CapacitorCalendarPlugin {
       alertOffsetInMinutes?: number | number[];
       url?: string;
       notes?: string;
-      recurrence?: ReminderRecurrenceRule;
+      recurrence?: RecurrenceRule;
     };
   }): Promise<{ result: string[] }>;
 
@@ -683,7 +683,7 @@ export interface CapacitorCalendarPlugin {
       alertOffsetInMinutes?: number | number[];
       url?: string;
       notes?: string;
-      recurrence?: ReminderRecurrenceRule;
+      recurrence?: RecurrenceRule;
     };
   }): Promise<void>;
 
@@ -763,7 +763,7 @@ export interface CapacitorCalendarPlugin {
       notes?: string;
       url?: string;
       location?: string;
-      recurrence?: ReminderRecurrenceRule;
+      recurrence?: RecurrenceRule;
     };
   }): Promise<void>;
 }
