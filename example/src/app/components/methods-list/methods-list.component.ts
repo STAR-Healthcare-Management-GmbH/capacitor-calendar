@@ -14,8 +14,8 @@ import {
   CapacitorCalendar,
   PluginPermission,
   PluginPermissionsMap,
-  ReminderRecurrenceFrequency,
-  ReminderRecurrenceRule,
+  RecurrenceFrequency,
+  RecurrenceRule,
 } from '@ebarooni/capacitor-calendar';
 import {StoreService} from '../../store/store.service';
 import {calendarChooserPickerColumns} from '../../ion-picker-data/calendar-chooser/calendar-chooser-picker-columns';
@@ -179,8 +179,8 @@ export class MethodsListComponent {
   public createEventWithRecurrence() {
     const now = Date.now();
     const end = now + 2 * 60 * 60 * 1000;
-    const recurrenceRule: ReminderRecurrenceRule = {
-      frequency: ReminderRecurrenceFrequency.DAILY,
+    const recurrenceRule: RecurrenceRule = {
+      frequency: RecurrenceFrequency.DAILY,
       interval: 1,
     }
 
@@ -252,7 +252,7 @@ export class MethodsListComponent {
       url: 'https://capacitor-calendar.pages.dev/',
       location: 'Remote',
       recurrence: {
-        frequency: ReminderRecurrenceFrequency.WEEKLY,
+        frequency: RecurrenceFrequency.WEEKLY,
         interval: 3,
         end: Date.now() + 6 * 7 * 24 * 60 * 60 * 1000, // 6 weeks from now
       },

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {IonButton, IonContent, IonItem, IonLabel, IonList} from "@ionic/angular/standalone";
 import {HeaderComponent} from "../../components/header/header.component";
-import {CapacitorCalendar, EventSpan, ReminderRecurrenceFrequency} from "@ebarooni/capacitor-calendar";
+import {CapacitorCalendar, EventSpan, RecurrenceFrequency} from "@ebarooni/capacitor-calendar";
 import {StoreService} from "../../store/store.service";
 
 @Component({
@@ -80,7 +80,7 @@ export class TestComponent implements OnInit {
       url: 'https://capacitor-calendar.pages.dev',
       notes: 'A CapacitorJS plugin',
       recurrence: {
-        frequency: ReminderRecurrenceFrequency.DAILY,
+        frequency: RecurrenceFrequency.DAILY,
         interval: 1
       }
     }
@@ -114,7 +114,7 @@ export class TestComponent implements OnInit {
         endDate: now + (2 * 60 * 60 * 1000),
         calendarId: this.lastCreatedCalendar,
         recurrence: {
-          frequency: ReminderRecurrenceFrequency.WEEKLY,
+          frequency: RecurrenceFrequency.WEEKLY,
           interval: 1
         }
       },

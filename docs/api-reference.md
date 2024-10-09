@@ -113,15 +113,15 @@ Requests authorization to all the required permissions for the plugin, if they h
 ### createEventWithPrompt(...)
 
 ```typescript
-createEventWithPrompt(options: { title: string; calendarId?: string; location?: string; startDate?: number; endDate?: number; isAllDay?: boolean; alertOffsetInMinutes?: number | number[]; url?: string; notes?: string; eventIdOptional?: boolean; recurrence?: ReminderRecurrenceRule; }) => Promise<{ result: string[]; }>
+createEventWithPrompt(options: { title: string; calendarId?: string; location?: string; startDate?: number; endDate?: number; isAllDay?: boolean; alertOffsetInMinutes?: number | number[]; url?: string; notes?: string; eventIdOptional?: boolean; recurrence?: RecurrenceRule; }) => Promise<{ result: string[]; }>
 ```
 
 Creates an event in the calendar by using the native calendar.
 On iOS opens a native sheet and on Android opens an intent.
 
-| Param         | Type                                                                                                                                                                                                                                                                                                             | Description                     |
-| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
-| **`options`** | <code>{ title: string; calendarId?: string; location?: string; startDate?: number; endDate?: number; isAllDay?: boolean; alertOffsetInMinutes?: number \| number[]; url?: string; notes?: string; eventIdOptional?: boolean; recurrence?: <a href="#reminderrecurrencerule">ReminderRecurrenceRule</a>; }</code> | Options for creating the event. |
+| Param         | Type                                                                                                                                                                                                                                                                                             | Description                     |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------- |
+| **`options`** | <code>{ title: string; calendarId?: string; location?: string; startDate?: number; endDate?: number; isAllDay?: boolean; alertOffsetInMinutes?: number \| number[]; url?: string; notes?: string; eventIdOptional?: boolean; recurrence?: <a href="#recurrencerule">RecurrenceRule</a>; }</code> | Options for creating the event. |
 
 **Returns:** <code>Promise&lt;{ result: string[]; }&gt;</code>
 
@@ -180,14 +180,14 @@ Retrieves the default calendar set on the device.
 ### createEvent(...)
 
 ```typescript
-createEvent(options: { title: string; calendarId?: string; location?: string; startDate?: number; endDate?: number; isAllDay?: boolean; alertOffsetInMinutes?: number | number[]; url?: string; notes?: string; recurrence?: ReminderRecurrenceRule; }) => Promise<{ result: string; }>
+createEvent(options: { title: string; calendarId?: string; location?: string; startDate?: number; endDate?: number; isAllDay?: boolean; alertOffsetInMinutes?: number | number[]; url?: string; notes?: string; recurrence?: RecurrenceRule; }) => Promise<{ result: string; }>
 ```
 
 Creates an event with the provided options.
 
-| Param         | Type                                                                                                                                                                                                                                                                                  | Description                     |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
-| **`options`** | <code>{ title: string; calendarId?: string; location?: string; startDate?: number; endDate?: number; isAllDay?: boolean; alertOffsetInMinutes?: number \| number[]; url?: string; notes?: string; recurrence?: <a href="#reminderrecurrencerule">ReminderRecurrenceRule</a>; }</code> | Options for creating the event. |
+| Param         | Type                                                                                                                                                                                                                                                                  | Description                     |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
+| **`options`** | <code>{ title: string; calendarId?: string; location?: string; startDate?: number; endDate?: number; isAllDay?: boolean; alertOffsetInMinutes?: number \| number[]; url?: string; notes?: string; recurrence?: <a href="#recurrencerule">RecurrenceRule</a>; }</code> | Options for creating the event. |
 
 **Returns:** <code>Promise&lt;{ result: string; }&gt;</code>
 
@@ -225,14 +225,14 @@ Retrieves all available reminders lists on the device.
 ### createReminder(...)
 
 ```typescript
-createReminder(options: { title: string; listId?: string; priority?: number; isCompleted?: boolean; startDate?: number; dueDate?: number; completionDate?: number; notes?: string; url?: string; location?: string; recurrence?: ReminderRecurrenceRule; }) => Promise<{ result: string; }>
+createReminder(options: { title: string; listId?: string; priority?: number; isCompleted?: boolean; startDate?: number; dueDate?: number; completionDate?: number; notes?: string; url?: string; location?: string; recurrence?: RecurrenceRule; }) => Promise<{ result: string; }>
 ```
 
 Creates a reminder with the provided options.
 
-| Param         | Type                                                                                                                                                                                                                                                                                  | Description                          |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| **`options`** | <code>{ title: string; listId?: string; priority?: number; isCompleted?: boolean; startDate?: number; dueDate?: number; completionDate?: number; notes?: string; url?: string; location?: string; recurrence?: <a href="#reminderrecurrencerule">ReminderRecurrenceRule</a>; }</code> | - Options for creating the reminder. |
+| Param         | Type                                                                                                                                                                                                                                                                  | Description                          |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| **`options`** | <code>{ title: string; listId?: string; priority?: number; isCompleted?: boolean; startDate?: number; dueDate?: number; completionDate?: number; notes?: string; url?: string; location?: string; recurrence?: <a href="#recurrencerule">RecurrenceRule</a>; }</code> | - Options for creating the reminder. |
 
 **Returns:** <code>Promise&lt;{ result: string; }&gt;</code>
 
@@ -464,14 +464,14 @@ Requests read and write access for the reminders. If its already granted, it wil
 ### modifyEventWithPrompt(...)
 
 ```typescript
-modifyEventWithPrompt(options: { id: string; update?: { title?: string; calendarId?: string; location?: string; startDate?: number; endDate?: number; isAllDay?: boolean; alertOffsetInMinutes?: number | number[]; url?: string; notes?: string; recurrence?: ReminderRecurrenceRule; }; }) => Promise<{ result: string[]; }>
+modifyEventWithPrompt(options: { id: string; update?: { title?: string; calendarId?: string; location?: string; startDate?: number; endDate?: number; isAllDay?: boolean; alertOffsetInMinutes?: number | number[]; url?: string; notes?: string; recurrence?: RecurrenceRule; }; }) => Promise<{ result: string[]; }>
 ```
 
 Opens a native prompt to modify an event given its id.
 
-| Param         | Type                                                                                                                                                                                                                                                                                                             | Description                         |
-| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
-| **`options`** | <code>{ id: string; update?: { title?: string; calendarId?: string; location?: string; startDate?: number; endDate?: number; isAllDay?: boolean; alertOffsetInMinutes?: number \| number[]; url?: string; notes?: string; recurrence?: <a href="#reminderrecurrencerule">ReminderRecurrenceRule</a>; }; }</code> | The options for modifying an event. |
+| Param         | Type                                                                                                                                                                                                                                                                                             | Description                         |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------- |
+| **`options`** | <code>{ id: string; update?: { title?: string; calendarId?: string; location?: string; startDate?: number; endDate?: number; isAllDay?: boolean; alertOffsetInMinutes?: number \| number[]; url?: string; notes?: string; recurrence?: <a href="#recurrencerule">RecurrenceRule</a>; }; }</code> | The options for modifying an event. |
 
 **Returns:** <code>Promise&lt;{ result: string[]; }&gt;</code>
 
@@ -483,14 +483,14 @@ Opens a native prompt to modify an event given its id.
 ### modifyEvent(...)
 
 ```typescript
-modifyEvent(options: { id: string; span?: EventSpan; update: { title?: string; calendarId?: string; location?: string; startDate?: number; endDate?: number; isAllDay?: boolean; alertOffsetInMinutes?: number | number[]; url?: string; notes?: string; recurrence?: ReminderRecurrenceRule; }; }) => Promise<void>
+modifyEvent(options: { id: string; span?: EventSpan; update: { title?: string; calendarId?: string; location?: string; startDate?: number; endDate?: number; isAllDay?: boolean; alertOffsetInMinutes?: number | number[]; url?: string; notes?: string; recurrence?: RecurrenceRule; }; }) => Promise<void>
 ```
 
 Modifies an event given its id and update details.
 
-| Param         | Type                                                                                                                                                                                                                                                                                                                                                       | Description                        |
-| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| **`options`** | <code>{ id: string; span?: <a href="#eventspan">EventSpan</a>; update: { title?: string; calendarId?: string; location?: string; startDate?: number; endDate?: number; isAllDay?: boolean; alertOffsetInMinutes?: number \| number[]; url?: string; notes?: string; recurrence?: <a href="#reminderrecurrencerule">ReminderRecurrenceRule</a>; }; }</code> | The options for updating an event. |
+| Param         | Type                                                                                                                                                                                                                                                                                                                                       | Description                        |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------- |
+| **`options`** | <code>{ id: string; span?: <a href="#eventspan">EventSpan</a>; update: { title?: string; calendarId?: string; location?: string; startDate?: number; endDate?: number; isAllDay?: boolean; alertOffsetInMinutes?: number \| number[]; url?: string; notes?: string; recurrence?: <a href="#recurrencerule">RecurrenceRule</a>; }; }</code> | The options for updating an event. |
 
 **Since:** 6.6.0
 
@@ -530,14 +530,14 @@ Retrieves a list of reminders sources.
 ### modifyReminder(...)
 
 ```typescript
-modifyReminder(options: { id: string; update: { title?: string; listId?: string; priority?: number; isCompleted?: boolean; startDate?: number; dueDate?: number; completionDate?: number; notes?: string; url?: string; location?: string; recurrence?: ReminderRecurrenceRule; }; }) => Promise<void>
+modifyReminder(options: { id: string; update: { title?: string; listId?: string; priority?: number; isCompleted?: boolean; startDate?: number; dueDate?: number; completionDate?: number; notes?: string; url?: string; location?: string; recurrence?: RecurrenceRule; }; }) => Promise<void>
 ```
 
 Modifies a reminder given its id and update details.
 
-| Param         | Type                                                                                                                                                                                                                                                                                                            | Description                          |
-| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| **`options`** | <code>{ id: string; update: { title?: string; listId?: string; priority?: number; isCompleted?: boolean; startDate?: number; dueDate?: number; completionDate?: number; notes?: string; url?: string; location?: string; recurrence?: <a href="#reminderrecurrencerule">ReminderRecurrenceRule</a>; }; }</code> | The options for updating a reminder. |
+| Param         | Type                                                                                                                                                                                                                                                                                            | Description                          |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| **`options`** | <code>{ id: string; update: { title?: string; listId?: string; priority?: number; isCompleted?: boolean; startDate?: number; dueDate?: number; completionDate?: number; notes?: string; url?: string; location?: string; recurrence?: <a href="#recurrencerule">RecurrenceRule</a>; }; }</code> | The options for updating a reminder. |
 
 **Since:** 6.7.0
 
@@ -550,13 +550,13 @@ Modifies a reminder given its id and update details.
 #### PluginPermissionsMap
 
 
-#### ReminderRecurrenceRule
+#### RecurrenceRule
 
-| Prop            | Type                                                                                | Description                                                                                             |
-| --------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| **`frequency`** | <code><a href="#reminderrecurrencefrequency">ReminderRecurrenceFrequency</a></code> | How frequent should the reminder repeat.                                                                |
-| **`interval`**  | <code>number</code>                                                                 | The interval should be a number greater than 0. For values lower than 1 the method will throw an error. |
-| **`end`**       | <code>number</code>                                                                 | When provided, the reminder will stop repeating at the given time.                                      |
+| Prop            | Type                                                                | Description                                                                                             |
+| --------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| **`frequency`** | <code><a href="#recurrencefrequency">RecurrenceFrequency</a></code> | How frequent should the reminder repeat.                                                                |
+| **`interval`**  | <code>number</code>                                                 | The interval should be a number greater than 0. For values lower than 1 the method will throw an error. |
+| **`end`**       | <code>number</code>                                                 | When provided, the reminder will stop repeating at the given time.                                      |
 
 
 #### Calendar
@@ -615,20 +615,20 @@ Represents an event in the calendar.
 
 Represents a reminder in a reminders list.
 
-| Prop                 | Type                                  |
-| -------------------- | ------------------------------------- |
-| **`id`**             | <code>string</code>                   |
-| **`title`**          | <code>string</code>                   |
-| **`listId`**         | <code>string</code>                   |
-| **`isCompleted`**    | <code>boolean</code>                  |
-| **`priority`**       | <code>number</code>                   |
-| **`notes`**          | <code>string</code>                   |
-| **`location`**       | <code>string</code>                   |
-| **`url`**            | <code>string</code>                   |
-| **`startDate`**      | <code>number</code>                   |
-| **`dueDate`**        | <code>number</code>                   |
-| **`completionDate`** | <code>number</code>                   |
-| **`recurrence`**     | <code>ReminderRecurrenceRule[]</code> |
+| Prop                 | Type                          |
+| -------------------- | ----------------------------- |
+| **`id`**             | <code>string</code>           |
+| **`title`**          | <code>string</code>           |
+| **`listId`**         | <code>string</code>           |
+| **`isCompleted`**    | <code>boolean</code>          |
+| **`priority`**       | <code>number</code>           |
+| **`notes`**          | <code>string</code>           |
+| **`location`**       | <code>string</code>           |
+| **`url`**            | <code>string</code>           |
+| **`startDate`**      | <code>number</code>           |
+| **`dueDate`**        | <code>number</code>           |
+| **`completionDate`** | <code>number</code>           |
+| **`recurrence`**     | <code>RecurrenceRule[]</code> |
 
 
 ### Type Aliases
@@ -652,7 +652,7 @@ Represents a reminder in a reminders list.
 | **`WRITE_REMINDERS`** | <code>'writeReminders'</code> | Represents the permission state for writing reminders. |
 
 
-#### ReminderRecurrenceFrequency
+#### RecurrenceFrequency
 
 | Members       | Description                             |
 | ------------- | --------------------------------------- |
